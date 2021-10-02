@@ -1,7 +1,7 @@
 package br.com.impacta.orderservice.service;
 
-import br.com.impacta.orderservice.exception.ParametroIncorretoException;
-import br.com.impacta.orderservice.exception.RegistroNaoEncontradoException;
+import br.com.impacta.orderservice.exception.ParameterException;
+import br.com.impacta.orderservice.exception.EntityNotFoundException;
 import br.com.impacta.orderservice.interfaces.IPedidos;
 import br.com.impacta.orderservice.model.Pedido;
 import br.com.impacta.orderservice.model.Produto;
@@ -24,16 +24,16 @@ public class PedidoService implements IPedidos {
     }
 
     @Override
-    public Pedido buscaPedidoPorId(int idPedido) throws RegistroNaoEncontradoException {
+    public Pedido buscaPedidoPorId(int idPedido) throws EntityNotFoundException {
         var pedidoConsultado = getPedido(idPedido);
         if (pedidoConsultado.isEmpty())
-            throw new RegistroNaoEncontradoException(String.format("O pedido %s não foi encontrado.", idPedido));
+            throw new EntityNotFoundException(String.format("O pedido %s não foi encontrado.", idPedido));
 
         return pedidoConsultado.get();
     }
 
     @Override
-    public int salvar(Pedido pedido) throws ParametroIncorretoException {
+    public int salvar(Pedido pedido) throws ParameterException {
         if (!(pedido.getIdPedido() == 0 && pedido.getDataPedido().equals(null))){
             Pedido novoPedido = new Pedido(pedido.getIdPedido(),pedido.getDataPedido(), //
                     pedido.getStatusPedido(), pedido.getPessoa(), pedido.getProduto(), pedido.getPagamento());
@@ -42,26 +42,26 @@ public class PedidoService implements IPedidos {
             return novoPedido.getIdPedido();
         }
 
-        throw new ParametroIncorretoException("O pedido está incorreto!");
+        throw new ParameterException("O pedido está incorreto!");
     }
 
     @Override
-    public Boolean deletarPedido(int idPedido) throws ParametroIncorretoException, RegistroNaoEncontradoException {
+    public Boolean deletarPedido(int idPedido) throws ParameterException, EntityNotFoundException {
         if (idPedido == 0)
-            throw new ParametroIncorretoException("O parametro id está incorreto!");
+            throw new ParameterException("O parametro id está incorreto!");
 
         var pedidoConsultado = getPedido(idPedido);
         if (pedidoConsultado.isEmpty())
-            throw new RegistroNaoEncontradoException(String.format("O pedido %s não foi encontrado.", idPedido));
+            throw new EntityNotFoundException(String.format("O pedido %s não foi encontrado.", idPedido));
 
         return repositorio.deletarPedido(pedidoConsultado.get());
     }
 
     @Override
-    public Pedido atualizarPedido(int idPedido, Pedido pedido) throws RegistroNaoEncontradoException {
+    public Pedido atualizarPedido(int idPedido, Pedido pedido) throws EntityNotFoundException {
         var pedidoConsultado = getPedido(idPedido);
         if (pedidoConsultado.isEmpty())
-            throw new RegistroNaoEncontradoException(String.format("O pedido %s não foi encontrado.", idPedido));
+            throw new EntityNotFoundException(String.format("O pedido %s não foi encontrado.", idPedido));
 
         return atualizaDados(pedidoConsultado.get(), pedido);
     }

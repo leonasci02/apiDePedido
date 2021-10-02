@@ -13,18 +13,26 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ParametroIncorretoException.class)
-    public final ResponseEntity<Object> handleParametroIncorreto(ParametroIncorretoException e, WebRequest req){
+    @ExceptionHandler(ParameterException.class)
+    public final ResponseEntity<Object> handleParametroIncorreto(ParameterException e, WebRequest req){
         Response ex = new Response(LocalDateTime.now(), e.getMessage(), req.getDescription(false));
 
         return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(RegistroNaoEncontradoException.class)
-    public final ResponseEntity<Object> handleRegistroNaoEncontrado(RegistroNaoEncontradoException e, WebRequest req){
+    @ExceptionHandler(EntityNotFoundException.class)
+    public final ResponseEntity<Object> handleRegistroNaoEncontrado(EntityNotFoundException e, WebRequest req){
         Response ex = new Response(LocalDateTime.now(), e.getMessage(), req.getDescription(false));
 
         return new ResponseEntity<>(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ServerException.class)
+    public final ResponseEntity<Object> handlerServerException(ServerException e, WebRequest req) {
+
+        Response ex = new Response(LocalDateTime.now(), e.getMessage(), req.getDescription(false));
+        return new ResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+
     }
 
 }

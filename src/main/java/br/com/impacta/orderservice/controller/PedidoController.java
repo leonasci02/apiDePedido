@@ -1,7 +1,7 @@
 package br.com.impacta.orderservice.controller;
 
-import br.com.impacta.orderservice.exception.ParametroIncorretoException;
-import br.com.impacta.orderservice.exception.RegistroNaoEncontradoException;
+import br.com.impacta.orderservice.exception.ParameterException;
+import br.com.impacta.orderservice.exception.EntityNotFoundException;
 import br.com.impacta.orderservice.model.Pedido;
 import br.com.impacta.orderservice.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class PedidoController {
     private final String baseUrl = "http://localhost:8080/pedido/";
 
     @GetMapping("/findById")
-    public ResponseEntity buscarPedido(@PathParam("id") int id) throws RegistroNaoEncontradoException {
+    public ResponseEntity buscarPedido(@PathParam("id") int id) throws EntityNotFoundException {
         return new ResponseEntity(this.pedido.buscaPedidoPorId(id), HttpStatus.OK);
     }
 
@@ -31,17 +31,17 @@ public class PedidoController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity salvarPedido(@RequestBody Pedido pedidos) throws ParametroIncorretoException {
+    public ResponseEntity salvarPedido(@RequestBody Pedido pedidos) throws ParameterException {
         return new ResponseEntity(String.format("%s/save/%s", baseUrl, this.pedido.salvar(pedidos)), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deletarPedido(@PathVariable(value = "id") int id) throws ParametroIncorretoException, RegistroNaoEncontradoException {
+    public ResponseEntity deletarPedido(@PathVariable(value = "id") int id) throws ParameterException, EntityNotFoundException {
         return new ResponseEntity(String.format("Pedido %s excluído.", this.pedido.deletarPedido(id)), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Pedido> atualizarDados(@PathParam("id") int id, @RequestBody Pedido pedido) throws RegistroNaoEncontradoException {
+    public ResponseEntity<Pedido> atualizarDados(@PathParam("id") int id, @RequestBody Pedido pedido) throws EntityNotFoundException {
         Pedido ped = this.pedido.atualizarPedido(id,pedido);
 
         return new ResponseEntity(ped, HttpStatus.OK);

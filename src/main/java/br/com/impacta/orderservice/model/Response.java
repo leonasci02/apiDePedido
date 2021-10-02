@@ -1,9 +1,12 @@
 package br.com.impacta.orderservice.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class Response {
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy hh:mm:ss")
     private LocalDateTime date;
     private String mensagem;
     private String descricao;
